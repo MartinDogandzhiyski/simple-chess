@@ -1,0 +1,180 @@
+from itertools import product
+
+games = int(input())
+matrix = [
+    ['x', 'x', 'x', 'x'],
+    ['x', 'x', 'x', 'x'],
+    ['x', 'x', 'x', 'x'],
+    ['x', 'x', 'x', 'x'],
+]
+white_queen_row, white_queen_col = 0, 0
+black_queen_row, black_queen_col = 0, 0
+
+for game in range(games):
+    horse, top, off = 0, 0, 0
+    white_figures, black_figures, max_turns = [int(x) for x in input().split()]
+    for fig in range(white_figures):
+        command = input().split()
+        type = command[0]
+        row = int(command[2])
+        col = command[1]
+        if col == 'A':
+            col = 0
+        elif col == 'B':
+            col = 1
+        elif col == 'C':
+            col = 2
+        elif col == 'D':
+            col = 3
+
+        if row == 4:
+            row = 0
+        elif row == 3:
+            row = 1
+        elif row == 2:
+            row = 2
+        elif row == 1:
+            row = 3
+
+        matrix[row][col] = 'W' + type
+        if matrix[row][col] == 'WN':
+            horse += 1
+        elif matrix[row][col] == 'WB':
+            off += 1
+        elif matrix[row][col] == 'WR':
+            top += 1
+
+    for fig in range(black_figures):
+        command = input().split()
+        type = command[0]
+        row = int(command[2])
+        col = command[1]
+        if col == 'A':
+            col = 0
+        elif col == 'B':
+            col = 1
+        elif col == 'C':
+            col = 2
+        elif col == 'D':
+            col = 3
+
+        if row == 4:
+            row = 0
+        elif row == 3:
+            row = 1
+        elif row == 2:
+            row = 2
+        elif row == 1:
+            row = 3
+        matrix[row][col] = 'B' + type
+      #  print(matrix)
+    won = False
+    upper = False
+    for turn in range(max_turns):
+        if won:
+            break
+        for row in range(len(matrix)):
+            if won:
+                break
+            if upper:
+                break
+            for col in range(4):
+                if matrix[row][col] == 'WP':
+                    if matrix[row - 1][col - 1] == 'BQ':
+                        won = True
+                        print('Yes!')
+                        break
+                    elif matrix[row + 1][col + 1] == 'BQ':
+                        won = True
+                        print('Yes!')
+                        break
+
+                    if row == 1:
+                        row = 0
+                        if horse < 2:
+                            matrix[row][col] = 'WN'
+                        elif top <= 2:
+                            matrix[row][col] = 'WR'
+                        elif off <= 2:
+                            matrix[row][col] = 'WR'
+                            upper = True
+                            break
+                elif matrix[row][col] == 'WN':
+                    possible_moves = list(product([row - 1, row + 1], [col - 2, col + 2])) + list(
+                        product([row - 2, row + 2], [col - 1, col + 1]))
+                    possible_moves = [(row, col) for row, col in possible_moves if
+                                      row >= 0 and col >= 0 and row < 4 and col < 4]
+            #        print(possible_moves)
+
+                    for tup in possible_moves:
+                        if won:
+                            break
+                        row = tup[0]
+                        col = tup[1]
+
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                elif matrix[row][col] == 'WB':
+                    while col >= 0 and row >= 0:
+                        col -= 1
+                        row -= 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col < 4 and row >= 0:
+                        col += 1
+                        row -= 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col >= 0 and row < 4:
+                        col -= 1
+                        row += 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col < 4 and row < 4:
+                        col += 1
+                        row += 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                elif matrix[row][col] == 'WR':
+                    while col >= 0 and row >= 0:
+                        row -= 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col >= 0 and row >= 0:
+                        col -= 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col < 4 and row < 4:
+                        col += 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
+
+                    while col >= 0 and row < 4:
+                        row += 1
+                        if matrix[row][col] == 'BQ':
+                            won = True
+                            print('Yes!')
+                            break
