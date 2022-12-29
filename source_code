@@ -1,6 +1,5 @@
 from itertools import product
 
-
 games = int(input())
 matrix = [
     ['x', 'x', 'x', 'x'],
